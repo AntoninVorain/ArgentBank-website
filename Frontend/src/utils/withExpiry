@@ -1,0 +1,44 @@
+/**
+ * Il faut une clé, une valeur et un TTL (time to live) et on set la paire clé/valeur dans le localStorage avec 
+ * une heure d'expiration
+ * @param {String} key - La String qui définira la clé des données localStorage.
+ * @param {String} value - La String qui définira la valeur des données localStorage.
+ * @param {Number} TTL - Le Number qui définira le Time to live des données localStorage.
+ */
+export const setWithExpiry = (key, value, TTL) => {
+	const now = new Date();
+	/* Créer un objet avec deux propriétés, valeur et expiration */
+	const item = {
+		value: value,
+		/* Ajoute l'heure actuelle au TTL pour obtenir l'heure d'expiration */
+		expiry: now.getTime() + TTL,
+	};
+	/* On set la paire clé/valeur dans le localStorage. */
+	localStorage.setItem(key, JSON.stringify(item));
+};
+
+/**
+ * On obtient la valeur de la clé du localStoage, on vérifie si l'heure actuelle est plus grande que
+ * l'heure d'expiration, et si ça l'est alors on retire l'item du localStorage et retourne null. Sinon,
+ * on retourne la valeur de l'item.
+ * @param {String} key - Une string de la clé pour obtenir les données du localStorage.
+ * @returns La valeur de l'item.
+ */
+export const getWithExpiry = (key) => {
+	/* On obtient la valeur de la clé du localStorage. */
+	const itemStr = localStorage.getItem(key);
+	/* Si itemStr n'est pas défini, alors on retourne null. */
+	if (!itemStr) {
+		return null;
+	}
+	/* Parse la string dans un objet JSON. */
+	const item = JSON.parse(itemStr);
+	const now = new Date();
+	/* Vérifie si l'heure actuelle est plus grande que l'heure d'expiration. Si c'est le cas, alors on retire l'item du localStorage et retourne null. */
+	if (now.getTime() > item.expiry) {
+		localStorage.removeItem(key);
+		return null;
+	}
+	/* Retourne la valeur de l'item. */
+	return item.value;
+};

@@ -1,0 +1,93 @@
+import axios from "axios";
+import { createAction, createReducer } from "@reduxjs/toolkit";
+
+import { userTokenAction, isConnectedAction, fetchOrUpdateUser } from "./user";
+
+import { setWithExpiry } from "./utils/withExpiry";
+
+const initialState = {
+	status: "void",
+	response: null,
+	error: null,
+};
+
+const loginFetchingAction = createAction("login/fetching");
+const loginResolvedAction = createAction("login/resolved");
+const loginRejectedAction = createAction("login/rejected");
+
+/**
+ * Fonction to vérifier le login et enregistrer des userData.
+ * @param {String} baseURL - URL de l'API.
+ * @param {String} email - Email entré dans le formulaire de login.
+ * @param {String} password - Mot de passe dans le formulaire de login.
+ * @returns Une fonction qui prend dispatch et getState comme arguments.
+ */
+export const fetchOrUpdateLogin = (baseURL, email, password) => {
+	return async (dispatch, getState) => {
+		/**
+		 * Si le status du login est pending ou updating, alors on return.
+		 */
+		const selectLogin = (state) => state.login;
+		const status = selectLogin(getState()).status;
+		if (status === "pending" || status === "updating") {
+			return;
+		}
+
+		dispatch(loginFetchingAction());
+		/* Faire un post request au serveur pour vérifier l'email et le mot de passe et retourner des userData. */
+		await axios
+			.post(baseURL + "/user/login", {
+				email: email,
+				password: password,
+			})
+			.then((response) => {
+				dispatch(loginResolvedAction(response.data));
+				dispatch(fetchOrUpdateUser(baseURL, response.data.body.token));
+				dispatch(userTokenAction(response.data.body.token));
+				setWithExpiry("userToken", response.data.body.token, 1000 * 60 * 60); //ms * sec * min
+				dispatch(isConnectedAction(true));
+			})
+			.catch((error) => {
+				dispatch(isConnectedAction(false));
+				dispatch(loginRejectedAction(error));
+			});
+	};
+};
+
+/* Créer le login reducer. */
+export default createReducer(initialState, (builder) =>
+	builder
+		.addCase(loginFetchingAction, (draft) => {
+			if (draft.status === "void") {
+				draft.status = "pending";
+				return;
+			}
+			if (draft.status === "rejected") {
+				draft.error = null;
+				draft.status = "pending";
+				return;
+			}
+			if (draft.status === "resolved") {
+				draft.status = "updating";
+				return;
+			}
+			return;
+		})
+		.addCase(loginResolvedAction, (draft, action) => {
+			if (draft.status === "pending" || draft.status === "updating") {
+				draft.response = action.payload;
+				draft.status = "resolved";
+				return;
+			}
+			return;
+		})
+		.addCase(loginRejectedAction, (draft, action) => {
+			if (draft.status === "pending" || draft.status === "updating") {
+				draft.status = "rejected";
+				draft.error = action.payload;
+				draft.response = null;
+				return;
+			}
+			return;
+		})
+);
