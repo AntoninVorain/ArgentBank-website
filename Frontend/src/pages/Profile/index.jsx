@@ -75,13 +75,15 @@ function Profile() {
 	/* It's checking if the userError state is not null or if the accountError state is not null. If the
 userError state is not null or the accountError state is not null, it returns a component that
 displays an error message. */
+	console.log(userError)
+	console.log(accountError)
 	if (userError !== null || accountError !== null) {
 		return (
 			<main className="main bg-dark">
 				<div className="header">
 					<h1>Error... </h1>
 					<h2>
-						{userError && "User data: " + userError.response.statusText} {accountError && "Account data: " + accountError.response.statusText}
+						{userError && "User data: " + userError.response} {accountError && "Account data: " + accountError.response}
 					</h2>
 				</div>
 			</main>

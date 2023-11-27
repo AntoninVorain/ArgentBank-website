@@ -47,11 +47,13 @@ export const fetchOrUpdateUser = (baseURL, token) => {
 			headers: { Authorization: `Bearer ${token}` },
 		})
 			.then((response) => {
+				console.log(response.data)
 				dispatch(userResolvedAction(response.data));
 				dispatch(userTokenAction(token));
 				dispatch(isConnectedAction(true));
 			})
 			.catch((error) => {
+				console.log(error)
 				dispatch(userRejectedAction(error));
 			});
 	};

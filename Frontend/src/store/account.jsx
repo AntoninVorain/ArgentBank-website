@@ -1,6 +1,8 @@
 import axios from "axios";
 import { createAction, createReducer } from "@reduxjs/toolkit";
 
+import { selectBaseURL, selectUserToken } from "./selectors.jsx";
+
 const initialState = {
 	status: "void",
 	data: null,
@@ -26,13 +28,16 @@ export const fetchOrUpdateAccount = async (dispatch, getState) => {
 	}
 
 	dispatch(accountFetchingAction());
+	console.log(selectBaseURL)
+	console.log(selectUserToken)
 	/* Fetching the account data. */
 	await axios
-		.get(window.location.origin + "/account-data.json")
+		.post(`${selectBaseURL}/user/profile`,{},{headers:{Authorization:`Bearer ${selectUserToken}`}})
 		.then((response) => {
 			dispatch(accountResolvedAction(response.data));
 		})
 		.catch((error) => {
+			console.log(error)
 			dispatch(accountRejectedAction(error));
 		});
 };
