@@ -1,5 +1,3 @@
-import "./home.scss"
-
 import HomeFeature from "../../components/HomeFeature";
 
 import iconChat from "../../assets/icon-chat.png";

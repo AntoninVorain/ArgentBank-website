@@ -1,0 +1,254 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> pages/Profile/index.jsx</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">Argent Bank - Documentation</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    Documentation
+                </a>
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"></div><div class="category"><h2>Components</h2><h3>Components</h3><ul><li><a href="AccountCard.html">AccountCard</a></li><li><a href="EditNameForm.html">EditNameForm</a></li><li><a href="Footer.html">Footer</a></li><li><a href="Header.html">Header</a></li><li><a href="HomeFeature.html">HomeFeature</a></li></ul></div><div class="category"><h2>Pages</h2><h3>Components</h3><ul><li><a href="Home.html">Home</a></li><li><a href="Login.html">Login</a></li><li><a href="Profile.html">Profile</a></li></ul></div><div class="category"><h2>Router</h2><h3>Components</h3><ul><li><a href="Router.html">Router</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>pages/Profile/index.jsx</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
+import AccountCard from "../../components/AccountCard";
+import EditNameForm from "../../components/EditNameForm";
+
+import { fetchOrUpdateAccount } from "../../store/account";
+import { fetchOrUpdateUser } from "../../store/user";
+
+import { getWithExpiry } from "../../utils/withExpiry";
+
+import {
+	selectBaseURL,
+	selectIsConnected,
+	selectUserToken,
+	selectUserStatus,
+	selectUserError,
+	selectUserId,
+	selectUserFirstName,
+	selectUserLastName,
+	selectAccountStatus,
+	selectAccountError,
+	selectUserAccountData,
+} from "../../store/selectors";
+
+import { useDispatch, useSelector } from "react-redux";
+
+/**
+ * Render Profil page that uses a redux store to check if the user is logged in. If the user is logged
+ * in, it display user account data. If the user is not logged in, it redirects to the login page.
+ *
+ * @category Pages
+ * @component
+ * @returns { React.Component } A React component
+ */
+function Profile() {
+	const navigate = useNavigate();
+	const dispatch = useDispatch();
+
+	const localUserToken = getWithExpiry("userToken");
+
+	const baseURL = useSelector(selectBaseURL());
+	const isConnected = useSelector(selectIsConnected());
+	const userToken = useSelector(selectUserToken());
+	const userStatus = useSelector(selectUserStatus());
+	const userError = useSelector(selectUserError());
+	const userId = useSelector(selectUserId());
+	const userFirstName = useSelector(selectUserFirstName());
+	const userLastName = useSelector(selectUserLastName());
+	const accountStatus = useSelector(selectAccountStatus());
+	const accountError = useSelector(selectAccountError());
+	const accountData = useSelector(selectUserAccountData(userId));
+
+	useEffect(() => {
+		/* It's checking if the localUserToken is not null and if the userToken is null. If the
+		localUserToken is not null and the userToken is null, it dispatches the fetchOrUpdateUser action. */
+		if (localUserToken &amp;&amp; !userToken) {
+			dispatch(fetchOrUpdateUser(baseURL, localUserToken));
+		}
+	}, [localUserToken, userToken, dispatch, baseURL]);
+
+	useEffect(() => {
+		/* It's dispatching the fetchOrUpdateAccount action. */
+		dispatch(fetchOrUpdateAccount);
+	}, [dispatch]);
+
+	useEffect(() => {
+		/* It's checking if the isConnected state is false and if the localUserToken is null. If the
+		isConnected state is false and the localUserToken is null, it redirects to the login page. */
+		if (!isConnected &amp;&amp; !localUserToken) {
+			navigate("/login");
+		}
+	}, [isConnected, localUserToken, navigate]);
+
+	/* It's checking if the userError state is not null or if the accountError state is not null. If the
+userError state is not null or the accountError state is not null, it returns a component that
+displays an error message. */
+	if (userError !== null || accountError !== null) {
+		return (
+			&lt;main className="main bg-dark">
+				&lt;div className="header">
+					&lt;h1>Error... &lt;/h1>
+					&lt;h2>
+						{userError &amp;&amp; "User data: " + userError.response.statusText} {accountError &amp;&amp; "Account data: " + accountError.response.statusText}
+					&lt;/h2>
+				&lt;/div>
+			&lt;/main>
+		);
+	}
+
+	/* It's checking if the userStatus state is not resolved or if the accountStatus state is not resolved.
+If the userStatus state is not resolved or the accountStatus state is not resolved, it returns a
+component that displays a loading message. */
+	if (userStatus !== "resolved" || accountStatus !== "resolved") {
+		return (
+			&lt;main className="main bg-dark">
+				&lt;div className="header">
+					&lt;h1>Loading...&lt;/h1>
+				&lt;/div>
+			&lt;/main>
+		);
+	}
+
+	/* It's checking if the userStatus state is rejected or if the accountStatus state is rejected. If the
+userStatus state is rejected or the accountStatus state is rejected, it returns a component that
+displays a message. */
+	if (userStatus === "rejected" || accountStatus === "rejected") {
+		return (
+			&lt;main className="main bg-dark">
+				&lt;div className="header">
+					&lt;h1>Your request is rejected&lt;/h1>
+				&lt;/div>
+			&lt;/main>
+		);
+	}
+
+	return (
+		&lt;main className="main bg-dark">
+			&lt;div className="header">
+				&lt;h1>
+					Welcome back
+					&lt;br />
+					{userFirstName &amp;&amp; userFirstName} {userLastName &amp;&amp; userLastName}!
+				&lt;/h1>
+				&lt;EditNameForm />
+			&lt;/div>
+			&lt;h2 className="sr-only">Accounts&lt;/h2>
+			{accountData &amp;&amp; accountData.account.map((account, index) => &lt;AccountCard key={account.title + "-" + index} title={account.title} amount={account.amount} description={account.description} />)}
+		&lt;/main>
+	);
+}
+
+export default Profile;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.10</a></p>
+                    <p class="sidebar-created-by">
+                        <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by
+                        <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+                    </p>
+                </div>
+            </footer>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+
+</body>
+</html>
