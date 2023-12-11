@@ -67,7 +67,7 @@ export const fetchOrUpdateUser = (baseURL, token) => {
  * @param {String} lastname - New lastname of the user.
  * @returns A function that takes dispatch and getState as arguments.
  */
-export const modifyUserName = (baseURL, token, firstname, lastname) => {
+export const modifyUserName = (baseURL, token, username) => {
 	return async (dispatch, getState) => {
 		/**
 		 * If the status of the user is pending or updating, then return.
@@ -85,8 +85,9 @@ export const modifyUserName = (baseURL, token, firstname, lastname) => {
 			url: baseURL + "/user/profile",
 			headers: { Authorization: `Bearer ${token}` },
 			data: {
-				firstName: firstname,
-				lastName: lastname,
+				userName: username,
+				// firstName: firstname,
+				// lastName: lastname,
 			},
 		})
 			.then((response) => {

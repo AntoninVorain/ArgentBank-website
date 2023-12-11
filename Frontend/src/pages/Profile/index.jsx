@@ -4,23 +4,23 @@ import { useNavigate } from "react-router-dom";
 import AccountCard from "../../components/AccountCard";
 import EditNameForm from "../../components/EditNameForm";
 
-import { fetchOrUpdateAccount } from "../../store/account";
+// import { fetchOrUpdateAccount } from "../../store/account";
 import { fetchOrUpdateUser } from "../../store/user";
 
 import { getWithExpiry } from "../../utils/withExpiry";
 
 import {
-	selectBaseURL,
-	selectIsConnected,
-	selectUserToken,
-	selectUserStatus,
-	selectUserError,
-	selectUserId,
-	selectUserFirstName,
-	selectUserLastName,
-	selectAccountStatus,
-	selectAccountError,
-	selectUserAccountData,
+  selectBaseURL,
+  selectIsConnected,
+  selectUserToken,
+  selectUserStatus,
+  selectUserError,
+  // selectUserId,
+  selectUserFirstName,
+  selectUserLastName,
+  // selectAccountStatus,
+  // selectAccountError,
+  // selectUserAccountData,
 } from "../../store/selectors";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -34,102 +34,110 @@ import { useDispatch, useSelector } from "react-redux";
  * @returns { React.Component } A React component
  */
 function Profile() {
-	const navigate = useNavigate();
-	const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-	const localUserToken = getWithExpiry("userToken");
+  const localUserToken = getWithExpiry("userToken");
 
-	const baseURL = useSelector(selectBaseURL());
-	const isConnected = useSelector(selectIsConnected());
-	const userToken = useSelector(selectUserToken());
-	const userStatus = useSelector(selectUserStatus());
-	const userError = useSelector(selectUserError());
-	const userId = useSelector(selectUserId());
-	const userFirstName = useSelector(selectUserFirstName());
-	const userLastName = useSelector(selectUserLastName());
-	const accountStatus = useSelector(selectAccountStatus());
-	const accountError = useSelector(selectAccountError());
-	const accountData = useSelector(selectUserAccountData(userId));
+  const baseURL = useSelector(selectBaseURL());
+  const isConnected = useSelector(selectIsConnected());
+  const userToken = useSelector(selectUserToken());
+  const userStatus = useSelector(selectUserStatus());
+  const userError = useSelector(selectUserError());
+ // const userId = useSelector(selectUserId());
+  const userFirstName = useSelector(selectUserFirstName());
+  const userLastName = useSelector(selectUserLastName());
+  // const accountStatus = useSelector(selectAccountStatus());
+  // const accountError = useSelector(selectAccountError());
+  // const accountData = useSelector(selectUserAccountData(userId));
 
-	useEffect(() => {
-		/* It's checking if the localUserToken is not null and if the userToken is null. If the
+  useEffect(() => {
+    /* It's checking if the localUserToken is not null and if the userToken is null. If the
 		localUserToken is not null and the userToken is null, it dispatches the fetchOrUpdateUser action. */
-		if (localUserToken && !userToken) {
-			dispatch(fetchOrUpdateUser(baseURL, localUserToken));
-		}
-	}, [localUserToken, userToken, dispatch, baseURL]);
+    if (localUserToken && !userToken) {
+      dispatch(fetchOrUpdateUser(baseURL, localUserToken));
+    }
+  }, [localUserToken, userToken, dispatch, baseURL]);
 
-	useEffect(() => {
-		/* It's dispatching the fetchOrUpdateAccount action. */
-		dispatch(fetchOrUpdateAccount);
-	}, [dispatch]);
+  // useEffect(() => {
+  //   /* It's dispatching the fetchOrUpdateAccount action. */
+  //   dispatch(fetchOrUpdateAccount);
+  // }, [dispatch]);
 
-	useEffect(() => {
-		/* It's checking if the isConnected state is false and if the localUserToken is null. If the
+  useEffect(() => {
+    /* It's checking if the isConnected state is false and if the localUserToken is null. If the
 		isConnected state is false and the localUserToken is null, it redirects to the login page. */
-		if (!isConnected && !localUserToken) {
-			navigate("/login");
-		}
-	}, [isConnected, localUserToken, navigate]);
+    if (!isConnected && !localUserToken) {
+      navigate("/login");
+    }
+  }, [isConnected, localUserToken, navigate]);
 
-	/* It's checking if the userError state is not null or if the accountError state is not null. If the
+  /* It's checking if the userError state is not null or if the accountError state is not null. If the
 userError state is not null or the accountError state is not null, it returns a component that
 displays an error message. */
-	console.log(userError)
-	console.log(accountError)
-	if (userError !== null || accountError !== null) {
-		return (
-			<main className="main bg-dark">
-				<div className="header">
-					<h1>Error... </h1>
-					<h2>
-						{userError && "User data: " + userError.response} {accountError && "Account data: " + accountError.response}
-					</h2>
-				</div>
-			</main>
-		);
-	}
+  console.log(userError);
+  // console.log(accountError)
+  if (userError !== null) {
+    // if (userError !== null || accountError !== null) {
+    return (
+      <main className="main bg-dark">
+        <div className="header">
+          <h1>Error... </h1>
+          <h2>
+            {userError && "User data: " + userError.response}
+            {/*{accountError && "Account data: " + accountError.response}*/}
+          </h2>
+        </div>
+      </main>
+    );
+  }
 
-	/* It's checking if the userStatus state is not resolved or if the accountStatus state is not resolved.
+  /* It's checking if the userStatus state is not resolved or if the accountStatus state is not resolved.
 If the userStatus state is not resolved or the accountStatus state is not resolved, it returns a
 component that displays a loading message. */
-	if (userStatus !== "resolved" || accountStatus !== "resolved") {
-		return (
-			<main className="main bg-dark">
-				<div className="header">
-					<h1>Loading...</h1>
-				</div>
-			</main>
-		);
-	}
+  if (userStatus !== "resolved") {
+    // if (userStatus !== "resolved" || accountStatus !== "resolved") {
+    return (
+      <main className="main bg-dark">
+        <div className="header">
+          <h1>Loading...</h1>
+        </div>
+      </main>
+    );
+  }
 
-	/* It's checking if the userStatus state is rejected or if the accountStatus state is rejected. If the
+  /* It's checking if the userStatus state is rejected or if the accountStatus state is rejected. If the
 userStatus state is rejected or the accountStatus state is rejected, it returns a component that
 displays a message. */
-	if (userStatus === "rejected" || accountStatus === "rejected") {
-		return (
-			<main className="main bg-dark">
-				<div className="header">
-					<h1>Your request is rejected</h1>
-				</div>
-			</main>
-		);
-	}
+  if (userStatus === "rejected") {
+    // if (userStatus === "rejected" || accountStatus === "rejected") {
+    return (
+      <main className="main bg-dark">
+        <div className="header">
+          <h1>Your request is rejected</h1>
+        </div>
+      </main>
+    );
+  }
 
-	return (
-		<main className="main bg-dark">
-			<div className="header">
-				<h1>
-					Welcome back
-					<br />
-					{userFirstName && userFirstName} {userLastName && userLastName}!
-				</h1>
-				<EditNameForm />
-			</div>
+  return (
+    <main className="main bg-dark">
+      <div className="header">
+        <h1>
+          Welcome back
+          <br />
+          {userFirstName && userFirstName} {userLastName && userLastName}!
+        </h1>
+        <EditNameForm />
+      </div>
 			<h2 className="sr-only">Accounts</h2>
-			{accountData && accountData.account.map((account, index) => <AccountCard key={account.title + "-" + index} title={account.title} amount={account.amount} description={account.description} />)}
-		</main>
-	);
+			<AccountCard title="Argent Bank Checking (x8349)" amount={2082.79} description="Available Balance" />
+			<AccountCard title="Argent Bank Checking (x8349)" amount={2082.79} description="Available Balance" />
+			<AccountCard title="Argent Bank Checking (x8349)" amount={2082.79} description="Available Balance" />
+      {/*les accounts ne sont pas à récupérer, ils sont en dur car il n'y a pas encore les transactions */}
+      {/*{accountData && accountData.account.map((account, index) => <AccountCard key={account.title + "-" + index} title={account.title} amount={account.amount} description={account.description} />)}*/}
+    </main>
+  );
 }
 
 export default Profile;
