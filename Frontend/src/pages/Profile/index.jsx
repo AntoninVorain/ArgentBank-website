@@ -18,9 +18,9 @@ import {
 	selectUserId,
 	selectUserFirstName,
 	selectUserLastName,
-	selectAccountStatus,
-	selectAccountError,
-	selectUserAccountData,
+	// selectAccountStatus,
+	// selectAccountError,
+	// selectUserAccountData,
 } from "../../store/selectors";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -47,9 +47,9 @@ function Profile() {
 	const userId = useSelector(selectUserId());
 	const userFirstName = useSelector(selectUserFirstName());
 	const userLastName = useSelector(selectUserLastName());
-	const accountStatus = useSelector(selectAccountStatus());
-	const accountError = useSelector(selectAccountError());
-	const accountData = useSelector(selectUserAccountData(userId));
+	// const accountStatus = useSelector(selectAccountStatus());
+	// const accountError = useSelector(selectAccountError());
+	// const accountData = useSelector(selectUserAccountData(userId));
 
   useEffect(() => {
     /* It's checking if the localUserToken is not null and if the userToken is null. If the
