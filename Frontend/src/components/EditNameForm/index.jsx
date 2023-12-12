@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import { modifyUserName } from "../../store/user";
 
-import { selectBaseURL, selectUserToken, selectUserFirstName, selectUserLastName } from "../../store/selectors";
+import { selectBaseURL, selectUserToken, selectUserFirstName, selectUserLastName, selectUserName } from "../../store/selectors";
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -22,9 +22,11 @@ function EditNameForm() {
 	const userToken = useSelector(selectUserToken());
 	const userFirstName = useSelector(selectUserFirstName());
 	const userLastName = useSelector(selectUserLastName());
+	const userName = useSelector(selectUserName());
 
 	const [newFirstName, setNewFirstName] = useState(null);
 	const [newLastName, setNewLastName] = useState(null);
+	const [newUserName, setNewUserName] = useState(null);
 	const [showEditNameForm, setShowEditNameForm] = useState(false);
 	const [editNameFormError, setEditNameFormError] = useState("");
 
@@ -32,15 +34,16 @@ function EditNameForm() {
 		event.preventDefault();
 		/* It's checking if the new first name and new last name are the same as the user first name and user
 		last name. If they are the same, it sets the error message to "There are no change". */
-		if (newFirstName === userFirstName && newLastName === userLastName) {
-			setEditNameFormError("FirstName and LastName are the same as the current ones.");
-		} /* It's checking if the new first name and new last name are empty. If they are empty, it sets the
-		error message to "Inputs can't be empty". */ else if (newFirstName.length === 0 || newLastName.length === 0) {
+		// if (newFirstName === userFirstName && newLastName === userLastName) {
+		// 	setEditNameFormError("FirstName and LastName are the same as the current ones.");
+		// } It's checking if the new first name and new last name are empty. If they are empty, it sets the
+		// error message to "Inputs can't be empty". */ 
+		if (newFirstName.length === 0 || newLastName.length === 0 || newUserName.length === 0) {
 			setEditNameFormError("Inputs can't be empty");
 		} /* It's checking if the new first name and new last name are not empty. If they are not empty, it
 		dispatches the modifyUserName action and it sets the showEditNameForm state to false and the
-		editNameFormError state to an empty string. */ else if (newFirstName.length > 0 && newLastName.length > 0) {
-			dispatch(modifyUserName(baseURL, userToken, newFirstName, newLastName));
+		editNameFormError state to an empty string. */ else if (newFirstName.length > 0 && newLastName.length > 0 && newUserName.length > 0) {
+			dispatch(modifyUserName(baseURL, userToken, newUserName));
 			setShowEditNameForm(false);
 			setEditNameFormError("");
 		}
@@ -58,7 +61,8 @@ function EditNameForm() {
 		userLastName. */
 		setNewFirstName(userFirstName);
 		setNewLastName(userLastName);
-	}, [userFirstName, userLastName]);
+		setNewUserName(userName);
+	}, [userFirstName, userLastName, userName]);
 
 	return (
 		<div>
@@ -70,7 +74,7 @@ function EditNameForm() {
 			{showEditNameForm && (
 				<form className="new-name-form" onSubmit={handleSubmit}>
 					<div className="input-group">
-						<div className="input-wrapper">
+						{/* <div className="input-wrapper">
 							<label className="hidden" htmlFor="firstname">
 								Firstname
 							</label>
@@ -81,6 +85,12 @@ function EditNameForm() {
 								Lastname
 							</label>
 							<input type="text" id="lastname" onChange={(e) => setNewLastName(e.target.value)} value={newLastName} />
+						</div> */}
+						<div className="input-wrapper">
+							<label className="hidden" htmlFor="username">
+								Username
+							</label>
+							<input type="text" id="username" onChange={(e) => setNewUserName(e.target.value)} value={newUserName} />
 						</div>
 					</div>
 					<div className="input-group input-center">

@@ -101,6 +101,56 @@ paths:
           description: Invalid Fields
         '500':
           description: Internal Server Error
+  /user/transactions:
+    get:
+      tags:
+        - Transactions Module
+      summary: Get transactions
+      description: API for fetching transactions
+      parameters:
+        - in: query
+          name: email
+          type: string
+          description: transactions payload
+          required: true
+      produces:    
+        - application/json
+      responses:
+        '200':
+          description: Transactions were tried successfully
+          schema:
+            $ref: '#/definitions/Transaction'
+        '400':
+          description: Invalid fields
+        '500':
+          description: Internal server error
+  /user/transactions/month:
+    get:
+      tags:
+        - Transactions Module
+      summary: Get transactions for a specific month
+      description: API for fetching transactions for a specific month
+      parameters:
+        - in: query
+          name: month
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 12
+          description: the month for fetch transactions
+          required: true
+      produces:    
+        - application/json
+      responses:
+        '200':
+          description: Transactions for a month were tried successfully
+          schema:
+            $ref: '#/definitions/Transaction'
+        '400':
+          description: Invalid fields
+        '500':
+          description: Internal server error
+          
 securityDefinitions:
   Bearer:
     type: apiKey
@@ -156,3 +206,17 @@ definitions:
     properties:
       userName:
         type: string
+  Transaction:
+    type: object
+    properties:
+      IdTransaction:
+        type: string
+        description: transactionID
+      dateTransaction:
+        type: string
+        format: date
+        description: date de la transaction
+      amount:
+        type: number
+        description: montant de la transaction
+        

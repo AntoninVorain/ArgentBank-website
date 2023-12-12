@@ -10,6 +10,7 @@ const initialState = {
 	email: null,
 	firstName: null,
 	lastName: null,
+	userName: null,
 	createdAt: null,
 	updatedAt: null,
 };
@@ -65,9 +66,10 @@ export const fetchOrUpdateUser = (baseURL, token) => {
  * @param {String} token - Token for user authentification.
  * @param {String} firstname - New firstname of the user.
  * @param {String} lastname - New lastname of the user.
+ * @param {String} username - New username of the user.
  * @returns A function that takes dispatch and getState as arguments.
  */
-export const modifyUserName = (baseURL, token, firstname, lastname) => {
+export const modifyUserName = (baseURL, token, username) => {
 	return async (dispatch, getState) => {
 		/**
 		 * If the status of the user is pending or updating, then return.
@@ -85,8 +87,9 @@ export const modifyUserName = (baseURL, token, firstname, lastname) => {
 			url: baseURL + "/user/profile",
 			headers: { Authorization: `Bearer ${token}` },
 			data: {
-				firstName: firstname,
-				lastName: lastname,
+				userName: username,
+				// firstName: firstname,
+				// lastName: lastname,
 			},
 		})
 			.then((response) => {
@@ -123,6 +126,7 @@ export default createReducer(initialState, (builder) =>
 				draft.email = action.payload.body.email;
 				draft.firstName = action.payload.body.firstName;
 				draft.lastName = action.payload.body.lastName;
+				draft.userName = action.payload.body.userName;
 				draft.createdAt = action.payload.body.createdAt;
 				draft.updatedAt = action.payload.body.updatedAt;
 				draft.status = "resolved";
@@ -140,6 +144,7 @@ export default createReducer(initialState, (builder) =>
 				draft.email = initialState.email;
 				draft.firstName = initialState.firstName;
 				draft.lastName = initialState.lastName;
+				draft.userName = initialState.userName;
 				draft.createdAt = initialState.createdAt;
 				draft.updatedAt = initialState.updatedAt;
 				return;
@@ -163,6 +168,7 @@ export default createReducer(initialState, (builder) =>
 			draft.email = initialState.email;
 			draft.firstName = initialState.firstName;
 			draft.lastName = initialState.lastName;
+			draft.userName = initialState.userName;
 			draft.createdAt = initialState.createdAt;
 			draft.updatedAt = initialState.updatedAt;
 			localStorage.removeItem("userToken");

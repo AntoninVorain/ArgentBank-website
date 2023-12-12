@@ -1,3 +1,14 @@
+// export const selectAccountStatus = () => {
+// 	return (state) => state.account.status;
+// };
+//
+// export const selectAccountError = () => {
+// 	return (state) => state.account.error;
+// };
+//
+// export const selectUserAccountData = (id) => {
+// 	return (state) => (state.account.data ? state.account.data.find((item) => item.userId === id) : null);
+// };
 export const selectBaseURL = () => {
 	return (state) => state.api.baseURL;
 };
@@ -38,22 +49,14 @@ export const selectUserLastName = () => {
 	return (state) => state.user.lastName;
 };
 
+export const selectUserName = () => {
+	return (state) => state.user.userName;
+};
+
 export const selectUserCreatedAt = () => {
 	return (state) => state.user.createdAt;
 };
 
 export const selectUserUpdatedAt = () => {
 	return (state) => state.user.updatedAt;
-};
-
-export const selectAccountStatus = () => {
-	return (state) => state.account.status;
-};
-
-export const selectAccountError = () => {
-	return (state) => state.account.error;
-};
-
-export const selectUserAccountData = (id) => {
-	return (state) => (state.account.data ? state.account.data.find((item) => item.userId === id) : null);
 };
