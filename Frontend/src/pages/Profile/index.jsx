@@ -10,18 +10,17 @@ import { fetchOrUpdateUser } from "../../store/user";
 import { getWithExpiry } from "../../utils/withExpiry";
 
 import {
-  selectBaseURL,
-  selectIsConnected,
-  selectUserToken,
-  selectUserStatus,
-  selectUserError,
-  // selectUserId,
-  selectUserFirstName,
-  selectUserLastName,
-  selectUserName,
-  // selectAccountStatus,
-  // selectAccountError,
-  // selectUserAccountData,
+	selectBaseURL,
+	selectIsConnected,
+	selectUserToken,
+	selectUserStatus,
+	selectUserError,
+	selectUserId,
+	selectUserFirstName,
+	selectUserLastName,
+	selectAccountStatus,
+	selectAccountError,
+	selectUserAccountData,
 } from "../../store/selectors";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -40,18 +39,17 @@ function Profile() {
 
   const localUserToken = getWithExpiry("userToken");
 
-  const baseURL = useSelector(selectBaseURL());
-  const isConnected = useSelector(selectIsConnected());
-  const userToken = useSelector(selectUserToken());
-  const userStatus = useSelector(selectUserStatus());
-  const userError = useSelector(selectUserError());
- // const userId = useSelector(selectUserId());
-  const userFirstName = useSelector(selectUserFirstName());
-  const userLastName = useSelector(selectUserLastName());
-  const userName = useSelector(selectUserName());
-  // const accountStatus = useSelector(selectAccountStatus());
-  // const accountError = useSelector(selectAccountError());
-  // const accountData = useSelector(selectUserAccountData(userId));
+	const baseURL = useSelector(selectBaseURL());
+	const isConnected = useSelector(selectIsConnected());
+	const userToken = useSelector(selectUserToken());
+	const userStatus = useSelector(selectUserStatus());
+	const userError = useSelector(selectUserError());
+	const userId = useSelector(selectUserId());
+	const userFirstName = useSelector(selectUserFirstName());
+	const userLastName = useSelector(selectUserLastName());
+	const accountStatus = useSelector(selectAccountStatus());
+	const accountError = useSelector(selectAccountError());
+	const accountData = useSelector(selectUserAccountData(userId));
 
   useEffect(() => {
     /* It's checking if the localUserToken is not null and if the userToken is null. If the
